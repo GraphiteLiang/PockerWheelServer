@@ -39,18 +39,24 @@ public class UdpHandler extends ChannelInboundHandlerAdapter{
 	        	dataManager.get(ctsd.tableId).letReady(ctsd.playerId);
 	        	if(dataManager.get(ctsd.tableId).isAllReady()) {
 	        		for(int i=0;i<4;i++) {
-	        			ServerToClientData data = dataManager.get(ctsd.tableId).spawnData(i);
+	        			ServerToClientData data = dataManager.get(ctsd.tableId).spawnData(Type.other, i);
 	        			ctx.write(data);
 	        		}
 	        		ctx.flush();
 	        	}
 	        	break;
 	        case game:
-	        	ServerToClientData data = dataManager.get(ctsd.tableId).translate(ctsd);
-	        	ctx.writeAndFlush(data);
+	        	dataManager.get(ctsd.tableId).translate(ctsd);
+	        	for(int i=0;i<4;i++) {
+        			ServerToClientData data = dataManager.get(ctsd.tableId).spawnData(Type.game, i);
+        			ctx.write(data);
+        		}
+        		ctx.flush();
 	        	break;
 	        case quit:
 	        	dataManager.get(ctsd.tableId).t.delPlayer(ctsd.playerId);
+	        	break;
+	        case over:
 	        	break;
 			default:
 				break;

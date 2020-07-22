@@ -26,13 +26,11 @@ public class DataManager implements BasicData{
 	public String toJson() {
 		return null;
 	}
-	public ServerToClientData translate(ClientToSeverData dr) {
+	public void translate(ClientToSeverData dr) {
 		int id = dr.playerId;
 		players.get(id).pay(t.cardPrice(dr.cardId));
 		players.get(id).receiveVisibleCard(t.tableCards[dr.cardId]);
 		t.delCard(dr.cardId);
-		ServerToClientData pd = spawnData(dr.playerId);
-		return pd;
 	}
 	public void letReady(int id) {
 		players.get(id).isReady = true;
@@ -44,9 +42,9 @@ public class DataManager implements BasicData{
 		}
 		return res;
 	}
-	public ServerToClientData spawnData(int playerid) {
+	public ServerToClientData spawnData(Type datatype, int playerid) {
 		ServerToClientData data = new ServerToClientData();
-		data.dataType = Type.game;
+		data.dataType = datatype;
 		Player p = players.get(playerid);
 		data.name = p.name;
 		data.address = p.address;
