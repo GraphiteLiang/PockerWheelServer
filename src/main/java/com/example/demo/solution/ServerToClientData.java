@@ -17,6 +17,10 @@ public class ServerToClientData implements BasicData{
 	int turn;
 	
 	public ServerToClientData() {
+		this.visibleCard = new int[5];
+		this.tableCards = new int[10];
+		this.coins = new int[4];
+		this.scores = new int[4];
 		
 	}
 	@Override
@@ -27,6 +31,7 @@ public class ServerToClientData implements BasicData{
 		object.put("playerId", playerId);
 		object.put("name", name);
 		object.put("visibleCard", visibleCard);
+		object.put("tableCards", tableCards);
 		object.put("coins", coins);
 		object.put("scores", scores);
 		object.put("epoch", epoch);

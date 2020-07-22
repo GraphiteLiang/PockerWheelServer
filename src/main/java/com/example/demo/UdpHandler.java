@@ -23,12 +23,13 @@ public class UdpHandler extends ChannelInboundHandlerAdapter{
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String preHandlerAfferentMsg = (String)msg; //得到消息后，可根据消息类型分发给不同的service去处理数据
         log.info("{}preHandler传入的数据{}"+preHandlerAfferentMsg);
-        ctx.fireChannelInactive();
 		ClientToSeverData ctsd = DataManager.jsonToData(preHandlerAfferentMsg);
         switch(ctsd.dataType) {
 	        case create:
 	        	dataManager.add(new DataManager());
-	        	dataManager.get(ctsd.tableId).addPlayer(ctsd.address);
+	        	dataManager.get(0).addPlayer(ctsd.address);
+	        	ServerToClientData d = dataManager.get(0).spawnData(Type.other, 0);
+    			ctx.writeAndFlush(d);
 	        	//返回tableid
 	        	break;
 	        case join:
