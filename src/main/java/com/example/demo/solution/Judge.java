@@ -17,12 +17,14 @@ public class Judge {
 			int[] flagb = blevel.getFlag();
 			for(int i=0;i<flaga.length;i++) {
 				if(flaga[i] > flagb[i]) {
+					if(flagb[i] == 1)return false;
 					return true;
 				}else if(flaga[i] < flagb[i]) {
+					if(flaga[i] == 1)return true;
 					return false;
 				}
 			}
-			return false;	
+			return false;
 		}
 	}
 	public static Level simpleJudgeLevelId(Card[] cards, int[] hand, int n) {

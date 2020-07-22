@@ -23,7 +23,7 @@ public class Table {
 	// ��ʼ����һ����Ϸ�ĳ�ʼ��
 	public Table() {
 		this.cardCount = 0;
-		this.playerCount = 4;
+		this.playerCount = 0;
 		this.maxPlayerCount = 4;
 		this.maxCardCount = player2card[maxPlayerCount];
 		this.tableCards = new int[maxCardCount];
@@ -60,7 +60,7 @@ public class Table {
 	
 	public void addPlayer(int playerid) {
 		if(playerCount == 4) return;
-		int[] tmp = new int[playerCount + 1];
+		int[] tmp = new int[maxPlayerCount];
 		for(int i=0;i<playerCount;i++) {
 			tmp[i] = this.players[i];
 		}

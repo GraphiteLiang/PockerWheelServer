@@ -28,14 +28,26 @@ public class UdpHandler extends ChannelInboundHandlerAdapter{
         switch(ctsd.dataType) {
 	        case create:
 	        	dataManager.add(new DataManager());
-	        	// 返回给客户端tableid
+	        	dataManager.get(ctsd.tableId).addPlayer(ctsd.address);
+	        	//返回tableid
 	        	break;
 	        case join:
-	        	
+	        	int id = dataManager.get(ctsd.tableId).addPlayer(ctsd.address);
+	        	// 返回客户端playerid
+	        	break;
+	        case ready:
+	        	dataManager.get(ctsd.tableId).letReady(ctsd.playerId);
+	        	if(dataManager.get(ctsd.tableId).isAllReady()) {
+	        		for(int i=0;i<4;i++) {
+	        			ServerToClientData data = dataManager.get(ctsd.tableId).spawnData(i);
+	        			ctx.write(data);
+	        		}
+	        		ctx.flush();
+	        	}
 	        	break;
 	        case game:
 	        	ServerToClientData data = dataManager.get(ctsd.tableId).translate(ctsd);
-	        	ctx.writeAndFlush(data.toJson());
+	        	ctx.writeAndFlush(data);
 	        	break;
 	        case quit:
 	        	dataManager.get(ctsd.tableId).t.delPlayer(ctsd.playerId);

@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.solution.ServerToClientData;
+
 import java.net.InetSocketAddress;
 import java.util.List;
 // 将需要发送给UDP Client进行数据封装的handler
@@ -23,8 +25,10 @@ public class UdpEncoderHandler extends MessageToMessageEncoder {
         byte[] data = o.toString().getBytes();
         ByteBuf buf = ctx.alloc().buffer(data.length);
         buf.writeBytes(data);
+        ServerToClientData tmp = (ServerToClientData)o;
+        String address = tmp.getAddress()==null?"127.0.0.1":tmp.getAddress();
         InetSocketAddress inetSocketAddress = 
-        		new InetSocketAddress("127.0.0.1", 1111);//指定客户端的IP及端口
+        		new InetSocketAddress(address, 1111);//指定客户端的IP及端口
         list.add(new DatagramPacket(buf, inetSocketAddress));
         LOGGER.info("{}发送消息{}:" + o.toString());
     }

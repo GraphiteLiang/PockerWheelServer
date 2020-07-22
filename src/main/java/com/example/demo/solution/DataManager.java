@@ -14,6 +14,15 @@ public class DataManager implements BasicData{
 		t = new Table();
 		players = new ArrayList<Player>(4);
 	}
+	public int addPlayer(String address) {
+		int x = players.size();
+		if(x >= 4) {
+			return -1;
+		}
+		players.add(new Player(x, address));
+		t.addPlayer(x);
+		return x;
+	}
 	public String toJson() {
 		return null;
 	}
@@ -25,11 +34,23 @@ public class DataManager implements BasicData{
 		ServerToClientData pd = spawnData(dr.playerId);
 		return pd;
 	}
+	public void letReady(int id) {
+		players.get(id).isReady = true;
+	}
+	public boolean isAllReady() {
+		boolean res = true;
+		for(Player p : players) {
+			res = res && p.isReady;
+		}
+		return res;
+	}
 	public ServerToClientData spawnData(int playerid) {
 		ServerToClientData data = new ServerToClientData();
 		data.dataType = Type.game;
 		Player p = players.get(playerid);
 		data.name = p.name;
+		data.address = p.address;
+		data.playerId = p.id;
 		data.visibleCard = p.visibleCard;
 		data.tableCards = t.tableCards;
 		for(int i=0;i<players.size();i++) {

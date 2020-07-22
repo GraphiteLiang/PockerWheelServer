@@ -5,6 +5,8 @@ public class Player {
 	// ������Ϣ
 	public int id;
 	public String name;
+	public boolean isReady;
+	public String address;
 	
 	// ��Ϸ���
 	public int[] visibleCard;
@@ -14,10 +16,12 @@ public class Player {
 	public int needMinPrice;
 	public int score;
 	
-	public Player(int id) {
+	public Player(int id, String address) {
 		this.id = id;
+		this.address = address;
 		this.visibleCard = new int[4];
 		this.unvisibleCard = new int[2];
+		this.isReady = false;
 		p = 0;
 		score = 0;
 		coin = 18;
