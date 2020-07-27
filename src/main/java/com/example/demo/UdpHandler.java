@@ -30,21 +30,21 @@ public class UdpHandler extends ChannelInboundHandlerAdapter{
 	        	dataManager.get(dataManager.size()-1).addPlayer(ctsd.address);
 	        	ServerToClientData d1 = dataManager.get(dataManager.size()-1).spawnData(Type.other, 0);
     			ctx.writeAndFlush(d1);
-	        	//返回tableid
 	        	break;
 	        case join:
 	        	int id = dataManager.get(ctsd.tableId).addPlayer(ctsd.address);
-	        	ServerToClientData d2 = dataManager.get(dataManager.size()-1).spawnData(Type.other, 0);
+	        	ServerToClientData d2 = dataManager.get(dataManager.size()-1).spawnData(Type.other, id);
 	        	ctx.writeAndFlush(d2);
 	        	break;
 	        case ready:
 	        	dataManager.get(ctsd.tableId).letReady(ctsd.playerId);
 	        	if(dataManager.get(ctsd.tableId).isAllReady()) {
+	        		ServerToClientData data = dataManager.get(ctsd.tableId).spawnData(Type.permit, 0);
 	        		for(int i=0;i<4;i++) {
-	        			ServerToClientData data = dataManager.get(ctsd.tableId).spawnData(Type.other, i);
 	        			ctx.write(data);
+	        			data = dataManager.get(ctsd.tableId).spawnData(Type.other, i);
 	        		}
-	        		ctx.flush();
+	        		ctx.writeAndFlush(data);
 	        	}
 	        	break;
 	        case game:
@@ -55,10 +55,13 @@ public class UdpHandler extends ChannelInboundHandlerAdapter{
         		}
         		ctx.flush();
 	        	break;
+	        case over:
+	        	int nextid = ctsd.playerId+1;
+	        	nextid = nextid>4?1:nextid;
+	        	ServerToClientData d3 = dataManager.get(ctsd.tableId).spawnData(Type.permit, nextid);
+    			ctx.writeAndFlush(d3);
 	        case quit:
 	        	dataManager.get(ctsd.tableId).t.delPlayer(ctsd.playerId);
-	        	break;
-	        case over:
 	        	break;
 	        case test:
 	        	dataManager.add(new DataManager(Type.test));

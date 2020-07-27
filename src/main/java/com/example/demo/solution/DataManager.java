@@ -55,13 +55,15 @@ public class DataManager implements BasicData{
 	public ServerToClientData spawnData(Type datatype, int playerid) {
 		ServerToClientData data = new ServerToClientData();
 		data.dataType = datatype;
+		
 		Player p = players.get(playerid);
 		data.name = p.name;
 		data.address = p.address;
 		data.playerId = p.id;
-		data.visibleCard = p.visibleCard;
+		data.handCard = p.unvisibleCard[0];
 		data.tableCards = t.tableCards;
 		for(int i=0;i<players.size();i++) {
+			data.visibleCards[i] = players.get(i).visibleCard;
 			data.coins[i] = players.get(i).coin;
 			data.scores[i] = players.get(i).score;
 		}

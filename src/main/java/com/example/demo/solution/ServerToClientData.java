@@ -1,5 +1,7 @@
 package com.example.demo.solution;
 
+import java.util.Arrays;
+
 import com.alibaba.fastjson.JSONObject;
 
 public class ServerToClientData implements BasicData{
@@ -9,7 +11,8 @@ public class ServerToClientData implements BasicData{
 	int playerId;// 玩家id
 	String name;// 玩家名字
 	String message;
-	int[] visibleCard;// 一张仅自己可见的手牌【0】，其他所有人可见的牌
+	int handCard;
+	int[][] visibleCards;//二维数组，[i][j]表示第i个玩家的场上可见的第j张牌
 	int[] tableCards;// 桌上的公共牌
 	int[] coins;// 每个人的金币数量
 	int[] scores;
@@ -17,7 +20,8 @@ public class ServerToClientData implements BasicData{
 	int turn;
 	
 	public ServerToClientData() {
-		this.visibleCard = new int[5];
+		this.visibleCards = new int[4][4];
+		this.handCard = -1;
 		this.tableCards = new int[10];
 		this.coins = new int[4];
 		this.scores = new int[4];
@@ -30,7 +34,7 @@ public class ServerToClientData implements BasicData{
 		object.put("dataType", dataType);
 		object.put("playerId", playerId);
 		object.put("name", name);
-		object.put("visibleCard", visibleCard);
+		object.put("visibleCards", visibleCards);
 		object.put("tableCards", tableCards);
 		object.put("coins", coins);
 		object.put("scores", scores);
