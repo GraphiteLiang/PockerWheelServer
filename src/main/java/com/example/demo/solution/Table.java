@@ -30,6 +30,9 @@ public class Table {
 		this.players = new int[playerCount];
 		this.deck = new Deck();
 		deck.shuffle(10);
+		
+	}
+	public void gameInit() {
 		for(int j=this.cardCount;j<this.maxCardCount;j++) {
 			this.addCard(this.deck.nextCard());
 		}

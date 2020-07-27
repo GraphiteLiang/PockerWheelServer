@@ -14,6 +14,16 @@ public class DataManager implements BasicData{
 		t = new Table();
 		players = new ArrayList<Player>(4);
 	}
+	public DataManager(Type type) {
+		if(type == Type.test) {
+			t = new Table();
+			players = new ArrayList<Player>(4);
+			for(int i=0;i<4;i++) {
+				this.addPlayer("127.0.0.1");
+			}
+			t.gameInit();
+		}
+	}
 	public int addPlayer(String address) {
 		int x = players.size();
 		if(x >= 4) {

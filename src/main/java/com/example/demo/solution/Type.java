@@ -11,6 +11,7 @@ public enum Type {
 	ready,// 玩家准备完毕的消息
 	// server->client
 	permit,// 允许某玩家开始行动
-	other
+	other,
 	//and more...
+	test
 }
