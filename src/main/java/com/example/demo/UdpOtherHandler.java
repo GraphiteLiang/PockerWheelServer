@@ -47,6 +47,7 @@ public class UdpOtherHandler extends ChannelInboundHandlerAdapter{
 	        	break;
 	    	case 3:
 	    		RoomInfo roomlist = new RoomInfo();
+	    		roomlist.address = ctsd.address;
 	    		for(int i=0;i<gameManagers.size();i++) {
 	    			GameManager g = gameManagers.get(i);
 	    			roomlist.addRoom(i, g.roomname, g.playerCount());
