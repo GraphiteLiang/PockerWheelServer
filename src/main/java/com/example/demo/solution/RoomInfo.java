@@ -10,7 +10,7 @@ public class RoomInfo extends BasicData{
 	public String address;
 	public RoomInfo() {
 		info = new ArrayList<Room>();
-		
+		this.dataType = Type.success;
 	}
 	public void addRoom(int id, String name, int count) {
 		info.add(new Room(id, name, count));
