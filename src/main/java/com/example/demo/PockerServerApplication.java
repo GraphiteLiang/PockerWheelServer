@@ -21,14 +21,21 @@ public class PockerServerApplication {
 	@Bean
 	CommandLineRunner serverRunner(UdpDecoderHandler udpDecoderHandler, 
 			UdpEncoderHandler udpEncoderHandler,
-			UdpHandler udpHandler) {
+			UdpHandler udpHandler,
+			UdpGameHandler gameHandler,
+			UdpOtherHandler otherHandler) {
 		return strings -> {
-			createUdpServer(udpDecoderHandler, udpEncoderHandler, udpHandler);
+			createUdpServer(udpDecoderHandler, 
+					udpEncoderHandler, 
+					udpHandler,
+					gameHandler,
+					otherHandler);
 		};
 	}
 	private void createUdpServer(UdpDecoderHandler udpDecoderHandler, 
 			UdpEncoderHandler udpEncoderHandler,
-			UdpHandler udpHandler) {
+			UdpHandler udpHandler, UdpGameHandler gameHandler,
+			UdpOtherHandler otherHandler) {
 		UdpServer.create().handle((in, out) ->{
 			in.receive().asByteArray().subscribe();
 			return Flux.never();
@@ -36,7 +43,9 @@ public class PockerServerApplication {
 		.port(3789)// udpserver 端口
 		.doOnBound(conn -> conn.addHandler("decoder", udpDecoderHandler)
 				.addHandler("encoder", udpEncoderHandler)
-				.addHandler("handler", udpHandler))
+				.addHandler("handler", udpHandler)
+				.addHandler("gameHandler", gameHandler)
+				.addHandler("otherhandler", otherHandler))
 		.bindNow(Duration.ofSeconds(30));
 	}
 

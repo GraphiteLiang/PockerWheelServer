@@ -18,55 +18,72 @@ import com.example.demo.solution.*;
 public class UdpHandler extends ChannelInboundHandlerAdapter{
 	private static final Logger log= 
 			LoggerFactory.getLogger(UdpHandler.class);
-	List<DataManager> dataManager = new ArrayList<DataManager>();
+	public static List<GameManager> gameManagers = new ArrayList<GameManager>();
 	@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String preHandlerAfferentMsg = (String)msg; //得到消息后，可根据消息类型分发给不同的service去处理数据
         log.info("{}preHandler传入的数据{}"+preHandlerAfferentMsg);
-		ClientToSeverData ctsd = DataManager.jsonToData(preHandlerAfferentMsg);
-        switch(ctsd.dataType) {
+        BasicData bd = GameManager.jsonToData(preHandlerAfferentMsg);
+        switch(bd.dataType) {
+	        case game:
+	        case other:
+	        case test:
+	        	ctx.fireChannelRead(bd);
+	        	break;
+			default:
+				break;
+        }
+        log.info("channelRead");
+        /*
+		ClientToSeverGameData ctsd = GameManager.jsonToData(preHandlerAfferentMsg);
+		GameManager gm = gameManagers.get(ctsd.tableId);
+        switch(ctsd.datatype) {
 	        case create:
-	        	dataManager.add(new DataManager());
-	        	dataManager.get(dataManager.size()-1).addPlayer(ctsd.address);
-	        	ServerToClientData d1 = dataManager.get(dataManager.size()-1).spawnData(Type.other, 0);
+	        	gameManagers.add(new GameManager());
+	        	gameManagers.get(gameManagers.size()-1).addPlayer(ctsd.address);
+	        	ServerToClientData d1 = gameManagers.get(gameManagers.size()-1).spawnData(Type.other, 0);
     			ctx.writeAndFlush(d1);
 	        	break;
 	        case join:
-	        	int id = dataManager.get(ctsd.tableId).addPlayer(ctsd.address);
-	        	ServerToClientData d2 = dataManager.get(dataManager.size()-1).spawnData(Type.other, id);
+	        	int id = gameManagers.get(ctsd.tableId).addPlayer(ctsd.address);
+	        	ServerToClientData d2 = gameManagers.get(gameManagers.size()-1).spawnData(Type.other, id);
 	        	ctx.writeAndFlush(d2);
 	        	break;
+	        case quit:
+	        	if(gm.delPlayer(ctsd.playerId) <= 0) {
+	        		gameManagers.remove(ctsd.tableId);
+	        	}
+	        	break;
 	        case ready:
-	        	dataManager.get(ctsd.tableId).letReady(ctsd.playerId);
-	        	if(dataManager.get(ctsd.tableId).isAllReady()) {
-	        		ServerToClientData data = dataManager.get(ctsd.tableId).spawnData(Type.permit, 0);
-	        		for(int i=0;i<4;i++) {
+	        	gm.letReady(ctsd.playerId);
+	        	if(gm.isAllReady()) {
+	        		gm.startGame();
+	        		ServerToClientData data = gm.spawnData(Type.permit, 0);
+	        		for(int i=1;i<4;i++) {
 	        			ctx.write(data);
-	        			data = dataManager.get(ctsd.tableId).spawnData(Type.other, i);
+	        			data = gm.spawnData(Type.game, i);
 	        		}
 	        		ctx.writeAndFlush(data);
 	        	}
 	        	break;
 	        case game:
-	        	dataManager.get(ctsd.tableId).translate(ctsd);
-	        	for(int i=0;i<4;i++) {
-        			ServerToClientData data = dataManager.get(ctsd.tableId).spawnData(Type.game, i);
-        			ctx.write(data);
-        		}
-        		ctx.flush();
-	        	break;
-	        case over:
-	        	int nextid = ctsd.playerId+1;
-	        	nextid = nextid>4?1:nextid;
-	        	ServerToClientData d3 = dataManager.get(ctsd.tableId).spawnData(Type.permit, nextid);
-    			ctx.writeAndFlush(d3);
-	        case quit:
-	        	dataManager.get(ctsd.tableId).t.delPlayer(ctsd.playerId);
+	        	if(gm.isPermited(ctsd.playerId)) {
+	        		gm.translate(ctsd);
+	        		int nextid = gm.getNextPlayer();
+		        	for(int i=0;i<4;i++) {
+		        		ServerToClientData data = gm.spawnData(Type.game, i);
+		        		if(i == nextid) {
+		        			data = gm.spawnData(Type.permit, i);
+		        		}
+	        			ctx.write(data);
+	        		}
+	        		ctx.flush();
+	        	}
 	        	break;
 	        case test:
-	        	dataManager.add(new DataManager(Type.test));
+	        	gameManagers.add(new GameManager(Type.test));
 	        	for(int i=0;i<4;i++) {
-        			ServerToClientData data = dataManager.get(ctsd.tableId).spawnData(Type.test, i);
+        			ServerToClientData data = gameManagers.get(ctsd.tableId).spawnData(Type.test, i);
         			ctx.write(data);
         		}
 	        	ctx.flush();
@@ -74,7 +91,8 @@ public class UdpHandler extends ChannelInboundHandlerAdapter{
 			default:
 				break;
         }
-        log.info("channelRead");
+        
+        */
     }
 	@Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {

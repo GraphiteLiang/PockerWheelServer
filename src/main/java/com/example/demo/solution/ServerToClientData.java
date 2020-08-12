@@ -4,9 +4,7 @@ import java.util.Arrays;
 
 import com.alibaba.fastjson.JSONObject;
 
-public class ServerToClientData implements BasicData{
-	Type dataType;
-	
+public class ServerToClientData extends BasicData{
 	String address;
 	int playerId;// 玩家id
 	String name;// 玩家名字
@@ -21,8 +19,10 @@ public class ServerToClientData implements BasicData{
 	
 	public ServerToClientData() {
 		this.visibleCards = new int[4][4];
+		for(int i=0;i<4;i++)Arrays.fill(visibleCards[i], -1);
 		this.handCard = -1;
 		this.tableCards = new int[10];
+		Arrays.fill(tableCards, -1);
 		this.coins = new int[4];
 		this.scores = new int[4];
 		
@@ -34,6 +34,7 @@ public class ServerToClientData implements BasicData{
 		object.put("dataType", dataType);
 		object.put("playerId", playerId);
 		object.put("name", name);
+		object.put("message", message);
 		object.put("visibleCards", visibleCards);
 		object.put("tableCards", tableCards);
 		object.put("coins", coins);

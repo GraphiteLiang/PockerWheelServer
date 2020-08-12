@@ -1,7 +1,6 @@
 package com.example.demo.solution;
 
-public class ClientToSeverData implements BasicData{
-	public Type dataType;
+public class ClientToServerGameData extends BasicData{
 	public String address;
 	public int tableId;// 多局游戏的同时进行时的tableid
 	public int playerId;// 数据来源的玩家id

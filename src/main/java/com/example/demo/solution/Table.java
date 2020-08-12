@@ -118,9 +118,6 @@ public class Table {
 		}
 		return 0;
 	}
-	public void startGame(Deck d, int PlayerCount) {
-		
-	}
 	public void playerResort(Player[] players, int n) {
 		for(int i=0;i<playerCount;i++) {
 			for(int j=0;j<playerCount-1;j++) {

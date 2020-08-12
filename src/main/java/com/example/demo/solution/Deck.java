@@ -7,8 +7,8 @@ public class Deck {
 	private int[] deck;
 	private int deckPos;
 	public Deck() {
-		cards = new Card[52];
-		int p = 0;
+		cards = new Card[53];
+		int p = 1;
 		for(int i:nums) {
 			for(int j:colors) {
 				cards[p] = new Card(j, i);
@@ -16,8 +16,8 @@ public class Deck {
 			}
 		}
 		deck = new int[52];
-		for(int i=0;i<52;i++) {
-			deck[i] = i;
+		for(int i=1;i<53;i++) {
+			deck[i-1] = i;
 		}
 		this.shuffle(1);
 		this.deckPos = 0;
