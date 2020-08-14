@@ -7,4 +7,9 @@ public class ClientToServerOtherData extends BasicData{
 	public int tableId;
 	public int playerId;
 	//{"dataType":1,"address":"127.0.0.1","operation":0, "tableId":1}
+	@Override
+	public String toJson() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
