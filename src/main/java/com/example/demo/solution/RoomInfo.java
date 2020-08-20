@@ -7,7 +7,6 @@ import com.alibaba.fastjson.JSONObject;
 
 public class RoomInfo extends BasicData{
 	public List<Room> info;
-	public String address;
 	public RoomInfo() {
 		info = new ArrayList<Room>();
 		this.dataType = Type.success;
@@ -17,8 +16,8 @@ public class RoomInfo extends BasicData{
 	}
 	public String toJson() {
 		JSONObject object = new JSONObject();
+		object.put("dataType", dataType.ordinal());
 		object.put("address", address);
-		object.put("dataType", dataType);
 		object.put("info", info);
 		return object.toJSONString();
 	}

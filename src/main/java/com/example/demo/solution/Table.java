@@ -10,7 +10,6 @@ public class Table {
 			{0,0,0,0,1,1,1,2,2,3},
 			{0,0,0,0,1,1,2,2,2,3}
 	};
-	public int id;
 	public int[] tableCards;
 	public int cardCount;
 	public int maxCardCount;
@@ -41,7 +40,7 @@ public class Table {
 		this.tableCards[cardCount] = card;
 		cardCount++;
 	}
-	public void delCards() {
+	public void delAllCards() {
 		int toDel = need2del[playerCount];
 		int[] tmp = new int[maxCardCount];
 		int p = 0;
@@ -60,7 +59,7 @@ public class Table {
 		this.tableCards[i] = -1;
 		this.cardCount -= 1;
 	}
-	
+	// table的添加删除玩家是减少该回合的玩家数量，区别与gm的删除玩家，仅在游戏内调用
 	public void addPlayer(int playerid) {
 		if(playerCount == 4) return;
 		int[] tmp = new int[maxPlayerCount];

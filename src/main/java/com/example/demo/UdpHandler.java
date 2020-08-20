@@ -28,6 +28,7 @@ public class UdpHandler extends ChannelInboundHandlerAdapter{
 	        case game:
 	        case other:
 	        case test:
+	        case ready:
 	        	ctx.fireChannelRead(bd);
 	        	break;
 			default:

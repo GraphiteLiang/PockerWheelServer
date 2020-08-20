@@ -40,6 +40,19 @@ public class UdpGameHandler extends ChannelInboundHandlerAdapter{
         	return;
     	}
     	GameManager gm = UdpHandler.gameManagers.get(ctsd.tableId);
+    	if(ctsd.dataType == Type.ready) {
+        	gm.letReady(ctsd.playerId);
+        	if(gm.isAllReady()) {
+        		gm.startGame();
+        		ServerToClientData data = gm.spawnData(Type.permit, 0);
+        		for(int i=1;i<4;i++) {
+        			ctx.write(data);
+        			data = gm.spawnData(Type.game, i);
+        		}
+        		ctx.writeAndFlush(data);
+        	}
+        	return;
+    	}
 		if(gm.isPermited(ctsd.playerId)) {
     		gm.translate(ctsd);
     		int nextid = gm.getNextPlayer();

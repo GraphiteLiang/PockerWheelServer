@@ -6,7 +6,7 @@ public class ClientToServerOtherData extends BasicData{
 	public int operation;// 0创建，1加入，2退出，3刷新界面
 	public int tableId;
 	public int playerId;
-	//{"dataType":1,"address":"127.0.0.1","operation":0, "tableId":1}
+	//{"dataType":1,"address":"127.0.0.1","operation":0,"message":"adf", "tableId":1, "playerId":1}
 	@Override
 	public String toJson() {
 		// TODO Auto-generated method stub

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import com.alibaba.fastjson.JSONObject;
 
 public class ServerToClientData extends BasicData{
-	String address;
 	int playerId;// 玩家id
 	String name;// 玩家名字
 	String message;
@@ -25,7 +24,10 @@ public class ServerToClientData extends BasicData{
 		Arrays.fill(tableCards, -1);
 		this.coins = new int[4];
 		this.scores = new int[4];
-		
+	}
+	public ServerToClientData(String address, Type datatype) {
+		this.address = address;
+		this.dataType = datatype;
 	}
 	@Override
 	public String toJson() {
@@ -37,6 +39,7 @@ public class ServerToClientData extends BasicData{
 		object.put("message", message);
 		object.put("visibleCards", visibleCards);
 		object.put("tableCards", tableCards);
+		object.put("handCard", handCard);
 		object.put("coins", coins);
 		object.put("scores", scores);
 		object.put("epoch", epoch);

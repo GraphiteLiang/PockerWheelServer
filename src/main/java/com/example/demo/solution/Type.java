@@ -11,4 +11,5 @@ public enum Type {
 	permit,// 允许某玩家开始行动
 	// and more...
 	success,//在游戏之外，服务器传递给客户端的回应成功信息
+	fail,// 在任何时候都有可能返回的失败信息
 }

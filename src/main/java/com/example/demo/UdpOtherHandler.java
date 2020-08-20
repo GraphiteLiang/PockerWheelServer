@@ -33,17 +33,28 @@ public class UdpOtherHandler extends ChannelInboundHandlerAdapter{
 	    	case 1:
 	    		GameManager gm = gameManagers.get(ctsd.tableId);
 	    		int id = gm.addPlayer(ctsd.address);
-	        	for(int i=0;i<=id;i++) {
-	    			ServerToClientData data = gm.spawnData(Type.success, i);
-	    			ctx.write(data);
+	    		if(id<0) {
+	    			ctx.write(new ServerToClientData(ctsd.address, Type.fail));
+	    		}else {
+	    			for(int i=0;i<=id;i++) {
+		    			ServerToClientData data = gm.spawnData(Type.success, i);
+		    			ctx.write(data);
+		    		}
 	    		}
 	        	ctx.flush();
 	        	break;
 	    	case 2:
 	    		gm = gameManagers.get(ctsd.tableId);
-	    		if(gm.delPlayer(ctsd.playerId) <= 0) {
+	    		int count = gm.delPlayer(ctsd.playerId);
+	    		if(count <= 0) {
 	        		gameManagers.remove(ctsd.tableId);
+	        	}else {
+	        		for(int i=0;i<count;i++) {
+	        			ServerToClientData data = gm.spawnData(Type.success, i);
+		    			ctx.write(data);
+	        		}
 	        	}
+	    		ctx.flush();
 	        	break;
 	    	case 3:
 	    		RoomInfo roomlist = new RoomInfo();
@@ -53,6 +64,7 @@ public class UdpOtherHandler extends ChannelInboundHandlerAdapter{
 	    			roomlist.addRoom(i, g.roomname, g.playerCount());
 	    		}
 	    		ctx.writeAndFlush(roomlist);
+	    		break;
     	}
     }
 	@Override
