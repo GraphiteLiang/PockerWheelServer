@@ -1,5 +1,7 @@
 package com.example.demo.solution;
 
+import java.util.List;
+
 public class Table {
 	public static final int[] player2card = {0, 3, 6, 10, 10};
 	public static final int[] need2del = {0, 1, 1, 3, 2};
@@ -63,12 +65,16 @@ public class Table {
 	public void addPlayer(int playerid) {
 		if(playerCount == 4) return;
 		int[] tmp = new int[maxPlayerCount];
+		boolean contains = false;
 		for(int i=0;i<playerCount;i++) {
+			if(this.players[i] == playerid)contains=true;
 			tmp[i] = this.players[i];
 		}
-		tmp[playerCount] = playerid;
+		if(!contains) {
+			tmp[playerCount] = playerid;
+			this.playerCount++;
+		}
 		this.players = tmp;
-		this.playerCount++;
 		this.maxCardCount = player2card[playerCount];
 		this.tableCards = new int[maxCardCount];
 	}
@@ -83,7 +89,7 @@ public class Table {
 			}
 		}
 		this.players = tmp;
-		this.playerCount --;
+		this.playerCount = p;
 		this.maxCardCount = player2card[playerCount];
 		this.tableCards = new int[maxCardCount];
 	}
@@ -117,12 +123,29 @@ public class Table {
 		}
 		return 0;
 	}
-	public void playerResort(Player[] players, int n) {
+	// 轮中重排
+	public void playerResort(List<Player> players, int n) {
 		for(int i=0;i<playerCount;i++) {
 			for(int j=0;j<playerCount-1;j++) {
-				boolean x = Judge.comparePlayerCard(deck.cards, 
-						players[this.players[j]], players[this.players[j+1]], n);
-				if(x) {
+				int x = Judge.comparePlayerCard(deck.cards, 
+						players.get(this.players[j]), 
+						players.get(this.players[j+1]), 
+						n);
+				if(x > 0) {
+					int tmp = this.players[j];
+					this.players[j] = this.players[j+1];
+					this.players[j+1] = tmp;
+				}
+			}
+		}
+	}
+	// 轮末重排
+	public void playerResort(List<Player> players2) {
+		for(int i=0;i<playerCount;i++) {
+			for(int j=0;j<playerCount-1;j++) {
+				int x = Judge.compareLevel(players2.get(this.players[j]).level, 
+						players2.get(this.players[j+1]).level);
+				if(x > 0) {
 					int tmp = this.players[j];
 					this.players[j] = this.players[j+1];
 					this.players[j+1] = tmp;

@@ -10,6 +10,7 @@ public class ServerToClientData extends BasicData{
 	String message;
 	int handCard;
 	int[][] visibleCards;//二维数组，[i][j]表示第i个玩家的场上可见的第j张牌
+	int[][] invisibleCards;// 二位数字，[i][j]表示第i个玩家场上不可见的第j张牌，j最大为2.只有在轮末才会为此数组赋值
 	int[] tableCards;// 桌上的公共牌
 	int[] coins;// 每个人的金币数量
 	int[] scores;

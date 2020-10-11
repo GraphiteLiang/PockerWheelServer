@@ -40,10 +40,11 @@ public class UdpGameHandler extends ChannelInboundHandlerAdapter{
         	return;
     	}
     	GameManager gm = UdpHandler.gameManagers.get(ctsd.tableId);
-    	if(ctsd.dataType == Type.ready) {
-        	gm.letReady(ctsd.playerId);
+    	if(ctsd.dataType == Type.ready || ctsd.dataType ==Type.skip) {
+        	gm.letReady(ctsd.playerId, ctsd.dataType);
         	if(gm.isAllReady()) {
-        		gm.startGame();
+        		if(!gm.gameactive)gm.startGame();
+        		else gm.nextEpoch();
         		ServerToClientData data = gm.spawnData(Type.permit, 0);
         		for(int i=1;i<4;i++) {
         			ctx.write(data);
@@ -53,11 +54,23 @@ public class UdpGameHandler extends ChannelInboundHandlerAdapter{
         	}
         	return;
     	}
+    	// 接受calculate的消息代表轮末可以开始结算分数
+    	if(ctsd.dataType == Type.calculate) {
+    		int nextid = gm.endOfEpoch();
+    		for(int i=0;i<4;i++) {
+        		ServerToClientData data = gm.spawnData(Type.game, i);
+        		if(i == nextid) {
+        			data = gm.spawnData(Type.permit, i);
+        		}
+    			ctx.write(data);
+    		}
+    	}
 		if(gm.isPermited(ctsd.playerId)) {
     		gm.translate(ctsd);
     		int nextid = gm.getNextPlayer();
+    		Type sendtype = gm.t.turn >= gm.t.playerCount?Type.calculate:Type.game;
         	for(int i=0;i<4;i++) {
-        		ServerToClientData data = gm.spawnData(Type.game, i);
+        		ServerToClientData data = gm.spawnData(sendtype, i);
         		if(i == nextid) {
         			data = gm.spawnData(Type.permit, i);
         		}

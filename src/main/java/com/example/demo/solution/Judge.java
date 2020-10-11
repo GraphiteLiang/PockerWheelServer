@@ -5,27 +5,10 @@ public class Judge {
 	// 0.HighCard 1.Pair 2.TwoPairs 3.ThreeofaKind4.Straight
 	// 5.Flush 6.FullHouse 7.FourofaKind 8.StraightFlush
 	
-	public static boolean comparePlayerCard(Card[] cards, Player a, Player b, int n) {
+	public static int comparePlayerCard(Card[] cards, Player a, Player b, int n) {
 		Level alevel = simpleJudgeLevelId(cards, a.visibleCard, n);
 		Level blevel = simpleJudgeLevelId(cards, b.visibleCard, n);
-		if(alevel.getLevel() > blevel.getLevel()) {
-			return true;
-		}else if(alevel.getLevel() < blevel.getLevel()) {
-			return false;
-		}else {
-			int[] flaga = alevel.getFlag();
-			int[] flagb = blevel.getFlag();
-			for(int i=0;i<flaga.length;i++) {
-				if(flaga[i] > flagb[i]) {
-					if(flagb[i] == 1)return false;
-					return true;
-				}else if(flaga[i] < flagb[i]) {
-					if(flaga[i] == 1)return true;
-					return false;
-				}
-			}
-			return false;
-		}
+		return compareLevel(alevel, blevel);
 	}
 	public static Level simpleJudgeLevelId(Card[] cards, int[] hand, int n) {
 		if(n==1) {
@@ -197,7 +180,26 @@ public class Judge {
 			return false;
 	}
 
-
+	public static int compareLevel(Level a, Level b) {
+		if(a.getLevel() > b.getLevel()) {
+			return 1;
+		}else if(a.getLevel() < b.getLevel()) {
+			return 0;
+		}else {
+			int[] flaga = a.getFlag();
+			int[] flagb = b.getFlag();
+			for(int i=0;i<flaga.length;i++) {
+				if(flaga[i] > flagb[i]) {
+					if(flagb[i] == 1)return 0;
+					return 1;
+				}else if(flaga[i] < flagb[i]) {
+					if(flaga[i] == 1)return 1;
+					return 0;
+				}
+			}
+			return 0;
+		}
+	}
 	public static void sort(int[] hand, int n) {
 		if(n==1)return;
 		for(int i=0;i<n;i++) {

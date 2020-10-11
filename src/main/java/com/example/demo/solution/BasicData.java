@@ -1,6 +1,8 @@
 package com.example.demo.solution;
 
-public abstract class BasicData {
+import java.io.Serializable;
+
+public abstract class BasicData{
 	public Type dataType;
 	public String address;
 	public abstract String toJson();

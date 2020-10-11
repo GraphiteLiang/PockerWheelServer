@@ -12,6 +12,7 @@ public class GameManager{
 	public Table t;
 	public String roomname;
 	int permitId;
+	public boolean gameactive;
 	public GameManager() {
 		players = new ArrayList<Player>(4);
 		permitId = -1;
@@ -69,10 +70,11 @@ public class GameManager{
 			t.addPlayer(i);
 		}
 		t.gameInit();
+		this.gameactive = true;
 		this.permitId = 0;
 	}
 	public boolean isPermited(int toCheckId) {
-		return toCheckId == permitId;
+		return toCheckId == t.players[this.permitId];
 	}
 	// 返回下一个用户的id
 	public int getNextPlayer() {
@@ -80,6 +82,7 @@ public class GameManager{
 		if(nextid >= 4) {
 			t.turn += 1;
 			nextid = 0;
+			t.playerResort(players, t.turn);
 		}
     	this.permitId = nextid;
     	if(t.turn >= 4) {
@@ -88,9 +91,28 @@ public class GameManager{
     	return t.players[nextid];
 	}
 	// TODO
-	// 进入下一轮游戏前，首先要等待所有玩家返回一个消息，确定是否要参加该轮游戏。
+	// 收到所有准备信息，开启下一轮, 将选择跳过该轮的玩家忽略掉
+	// 调用table的添加/删除玩家来完成忽略掉某些玩家的实现
+	// 可以直接调用，函数体内已经实现了存在和不存在的两种情况
 	public void nextEpoch() {
-		
+		for(int i=0;i<4;i++) {
+			if(!players.get(i).isPlay)this.t.delPlayer(i);
+			else this.t.addPlayer(i);
+		}
+		this.t.playerResort(players);
+	}
+	// TODO
+	// 轮末，计算分数,并且得到下一轮的首动玩家
+	// 不参与这一轮的玩家使其获得0level
+	// 暂且是模拟加分，直接每位玩家获得10分
+	public int endOfEpoch() {
+		for(int i=0;i<4;i++) {
+			players.get(i).score += 10;
+			players.get(i).level = new Level(0, new int[] {1,2});
+			players.get(i).isPlay = false;
+			players.get(i).isReady = false;
+		}
+		return 0;
 	}
 	public void translate(ClientToServerGameData dr) {
 		int id = dr.playerId;
@@ -98,8 +120,10 @@ public class GameManager{
 		players.get(id).receiveVisibleCard(t.tableCards[dr.cardId]);
 		t.delCard(dr.cardId);
 	}
-	public void letReady(int id) {
+	public void letReady(int id, Type type) {
 		if(id < players.size()) {
+			players.get(id).isPlay = true;
+			if(type == Type.skip)players.get(id).isPlay = false;
 			players.get(id).isReady = true;
 		}
 	}
@@ -118,10 +142,13 @@ public class GameManager{
 		data.name = p.name;
 		data.address = p.address;
 		data.playerId = p.id;
-		data.handCard = p.unvisibleCard[0];
+		data.handCard = p.invisibleCard[0];
 		data.tableCards = t.tableCards;
+		
 		for(int i=0;i<4;i++) {
 			if(i < players.size()) {
+				if(datatype == Type.calculate)
+					data.invisibleCards[i] = players.get(i).invisibleCard;
 				data.visibleCards[i] = players.get(i).visibleCard;
 				data.coins[i] = players.get(i).coin;
 				data.scores[i] = players.get(i).score;

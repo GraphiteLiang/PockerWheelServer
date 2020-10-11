@@ -7,8 +7,10 @@ public enum Type {
 	// client->server
 	over,// 回合结束的消息
 	ready,// 玩家准备完毕的消息
+	skip,// 玩家跳过下一轮
 	// server->client
 	permit,// 允许某玩家开始行动
+	calculate,// 轮末消息
 	// and more...
 	success,//在游戏之外，服务器传递给客户端的回应成功信息
 	fail,// 在任何时候都有可能返回的失败信息
